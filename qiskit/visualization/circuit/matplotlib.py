@@ -66,8 +66,8 @@ from ._utils import (
 from ..utils import matplotlib_close_if_inline
 
 # Default gate width and height
-WID = 0.65
-HIG = 0.65
+WID = 0.3 # NOTE changed
+HIG = 0.3
 
 # Z dimension order for different drawing types
 PORDER_REGLINE = 1
@@ -139,7 +139,7 @@ class MatplotlibDrawer:
 
         self._lwidth1 = 1.0
         self._lwidth15 = 1.5
-        self._lwidth2 = 2.0
+        self._lwidth2 = 2.0 # NOTE for CZ lines
         self._lwidth3 = 3.0
         self._lwidth4 = 4.0
 
@@ -368,8 +368,8 @@ class MatplotlibDrawer:
 
         # Once the scaling factor has been determined, the global phase, register names
         # and numbers, wires, and gates are drawn
-        if self._global_phase:
-            plt_mod.text(xl, yt, "Global Phase: %s" % pi_check(self._global_phase, output="mpl"))
+        # if self._global_phase:
+        #     plt_mod.text(xl, yt, "Global Phase: %s" % pi_check(self._global_phase, output="mpl"))
         self._draw_regs_wires(num_folds, xmax, max_x_index, qubits_dict, clbits_dict, glob_data)
         self._draw_ops(
             self._nodes,
@@ -613,7 +613,8 @@ class MatplotlibDrawer:
                 if not isinstance(node.op, ControlFlowOp):
                     node_data[node].width = max(raw_gate_width, raw_param_width)
             for node in layer:
-                layer_widths[node][0] = int(widest_box) + 1
+                # layer_widths[node][0] = int(widest_box) + 1
+                layer_widths[node][0] = WID + 0.2 # NOTE changed
 
         return layer_widths
 
@@ -850,17 +851,17 @@ class MatplotlibDrawer:
             for qubit in qubits_dict.values():
                 qubit_label = qubit["wire_label"]
                 y = qubit["y"] - fold_num * (glob_data["n_lines"] + 1)
-                self._ax.text(
-                    glob_data["x_offset"] - 0.2,
-                    y,
-                    qubit_label,
-                    ha="right",
-                    va="center",
-                    fontsize=1.25 * self._style["fs"],
-                    color=self._style["tc"],
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
+                # self._ax.text(
+                #     glob_data["x_offset"] - 0.2,
+                #     y,
+                #     qubit_label,
+                #     ha="right",
+                #     va="center",
+                #     fontsize=1.25 * self._style["fs"],
+                #     color=self._style["tc"],
+                #     clip_on=True,
+                #     zorder=PORDER_TEXT,
+                # )
                 # draw the qubit wire
                 self._line([glob_data["x_offset"], y], [xmax, y], zorder=PORDER_REGLINE)
 
@@ -886,28 +887,28 @@ class MatplotlibDrawer:
                         color=self._style["cc"],
                         zorder=PORDER_REGLINE,
                     )
-                    self._ax.text(
-                        glob_data["x_offset"] + 0.1,
-                        y + 0.1,
-                        str(this_clbit["register"].size),
-                        ha="left",
-                        va="bottom",
-                        fontsize=0.8 * self._style["fs"],
-                        color=self._style["tc"],
-                        clip_on=True,
-                        zorder=PORDER_TEXT,
-                    )
-                self._ax.text(
-                    glob_data["x_offset"] - 0.2,
-                    y,
-                    this_clbit["wire_label"],
-                    ha="right",
-                    va="center",
-                    fontsize=1.25 * self._style["fs"],
-                    color=self._style["tc"],
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
+                    # self._ax.text(
+                    #     glob_data["x_offset"] + 0.1,
+                    #     y + 0.1,
+                    #     str(this_clbit["register"].size),
+                    #     ha="left",
+                    #     va="bottom",
+                    #     fontsize=0.8 * self._style["fs"],
+                    #     color=self._style["tc"],
+                    #     clip_on=True,
+                    #     zorder=PORDER_TEXT,
+                    # )
+                # self._ax.text(
+                #     glob_data["x_offset"] - 0.2,
+                #     y,
+                #     this_clbit["wire_label"],
+                #     ha="right",
+                #     va="center",
+                #     fontsize=1.25 * self._style["fs"],
+                #     color=self._style["tc"],
+                #     clip_on=True,
+                #     zorder=PORDER_TEXT,
+                # )
                 # draw the clbit wire
                 self._line(
                     [glob_data["x_offset"], y],
@@ -963,17 +964,17 @@ class MatplotlibDrawer:
                 else:
                     x_coord = layer_num + glob_data["x_offset"] + 0.53
                     y_coord = 0.65
-                self._ax.text(
-                    x_coord,
-                    y_coord,
-                    str(layer_num + 1),
-                    ha="center",
-                    va="center",
-                    fontsize=self._style["sfs"],
-                    color=self._style["tc"],
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
+                # self._ax.text(
+                #     x_coord,
+                #     y_coord,
+                #     str(layer_num + 1),
+                #     ha="center",
+                #     va="center",
+                #     fontsize=self._style["sfs"],
+                #     color=self._style["tc"],
+                #     clip_on=True,
+                #     zorder=PORDER_TEXT,
+                # )
 
     def _add_nodes_and_coords(
         self,
@@ -1163,6 +1164,7 @@ class MatplotlibDrawer:
         node_data[node].tc = self._style["tc"]
         node_data[node].sc = sc
         node_data[node].lc = lc
+        print(fc)
 
     def _condition(self, node, node_data, wire_map, outer_circuit, cond_xy, glob_data):
         """Add a conditional to a gate"""
@@ -1255,17 +1257,17 @@ class MatplotlibDrawer:
         xpos, ypos = clbit_b
         if isinstance(node.op, Measure):
             xpos += 0.3
-        self._ax.text(
-            xpos,
-            ypos - 0.3 * HIG,
-            label,
-            ha="center",
-            va="top",
-            fontsize=self._style["sfs"],
-            color=self._style["tc"],
-            clip_on=True,
-            zorder=PORDER_TEXT,
-        )
+        # self._ax.text(
+        #     xpos,
+        #     ypos - 0.3 * HIG,
+        #     label,
+        #     ha="center",
+        #     va="top",
+        #     fontsize=self._style["sfs"],
+        #     color=self._style["tc"],
+        #     clip_on=True,
+        #     zorder=PORDER_TEXT,
+        # )
         self._line(qubit_b, clbit_b, lc=self._style["cc"], ls=self._style["cline"])
 
     def _measure(self, node, node_data, outer_circuit, glob_data):
@@ -1315,18 +1317,18 @@ class MatplotlibDrawer:
         )
         self._ax.add_artist(arrowhead)
         # target
-        if self._cregbundle and register is not None:
-            self._ax.text(
-                cx + 0.25,
-                cy + 0.1,
-                str(reg_index),
-                ha="left",
-                va="bottom",
-                fontsize=0.8 * self._style["fs"],
-                color=self._style["tc"],
-                clip_on=True,
-                zorder=PORDER_TEXT,
-            )
+        # if self._cregbundle and register is not None:
+        #     self._ax.text(
+        #         cx + 0.25,
+        #         cy + 0.1,
+        #         str(reg_index),
+        #         ha="left",
+        #         va="bottom",
+        #         fontsize=0.8 * self._style["fs"],
+        #         color=self._style["tc"],
+        #         clip_on=True,
+        #         zorder=PORDER_TEXT,
+        #     )
 
     def _barrier(self, node, node_data, glob_data):
         """Draw a barrier"""
@@ -1360,17 +1362,17 @@ class MatplotlibDrawer:
             # display the barrier label at the top if there is one
             if i == 0 and node.op.label is not None:
                 dir_ypos = ypos + 0.65 * HIG
-                self._ax.text(
-                    xpos,
-                    dir_ypos,
-                    node.op.label,
-                    ha="center",
-                    va="top",
-                    fontsize=self._style["fs"],
-                    color=node_data[node].tc,
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
+                # self._ax.text(
+                #     xpos,
+                #     dir_ypos,
+                #     node.op.label,
+                #     ha="center",
+                #     va="top",
+                #     fontsize=self._style["fs"],
+                #     color=node_data[node].tc,
+                #     clip_on=True,
+                #     zorder=PORDER_TEXT,
+                # )
 
     def _gate(self, node, node_data, glob_data, xy=None):
         """Draw a 1-qubit gate"""
@@ -1378,6 +1380,7 @@ class MatplotlibDrawer:
             xy = node_data[node].q_xy[0]
         xpos, ypos = xy
         wid = max(node_data[node].width, WID)
+        wid = WID # NOTE changed
 
         box = glob_data["patches_mod"].Rectangle(
             xy=(xpos - 0.5 * wid, ypos - 0.5 * HIG),
@@ -1394,28 +1397,28 @@ class MatplotlibDrawer:
             gate_ypos = ypos
             if node_data[node].param_text:
                 gate_ypos = ypos + 0.15 * HIG
-                self._ax.text(
-                    xpos,
-                    ypos - 0.3 * HIG,
-                    node_data[node].param_text,
-                    ha="center",
-                    va="center",
-                    fontsize=self._style["sfs"],
-                    color=node_data[node].sc,
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
-            self._ax.text(
-                xpos,
-                gate_ypos,
-                node_data[node].gate_text,
-                ha="center",
-                va="center",
-                fontsize=self._style["fs"],
-                color=node_data[node].gt,
-                clip_on=True,
-                zorder=PORDER_TEXT,
-            )
+                # self._ax.text(
+                #     xpos,
+                #     ypos - 0.3 * HIG,
+                #     node_data[node].param_text,
+                #     ha="center",
+                #     va="center",
+                #     fontsize=self._style["sfs"],
+                #     color=node_data[node].sc,
+                #     clip_on=True,
+                #     zorder=PORDER_TEXT,
+                # )
+            # self._ax.text(
+            #     xpos,
+            #     gate_ypos,
+            #     node_data[node].gate_text,
+            #     ha="center",
+            #     va="center",
+            #     fontsize=self._style["fs"],
+            #     color=node_data[node].gt,
+            #     clip_on=True,
+            #     zorder=PORDER_TEXT,
+            # )
 
     def _multiqubit_gate(self, node, node_data, glob_data, xy=None):
         """Draw a gate covering more than one qubit"""
@@ -1458,58 +1461,58 @@ class MatplotlibDrawer:
         self._ax.add_patch(box)
 
         # annotate inputs
-        for bit, y in enumerate([x[1] for x in xy]):
-            self._ax.text(
-                xpos + 0.07 - 0.5 * wid,
-                y,
-                str(bit),
-                ha="left",
-                va="center",
-                fontsize=self._style["fs"],
-                color=node_data[node].gt,
-                clip_on=True,
-                zorder=PORDER_TEXT,
-            )
-        if c_xy:
-            # annotate classical inputs
-            for bit, y in enumerate([x[1] for x in c_xy]):
-                self._ax.text(
-                    cxpos + 0.07 - 0.5 * wid,
-                    y,
-                    str(bit),
-                    ha="left",
-                    va="center",
-                    fontsize=self._style["fs"],
-                    color=node_data[node].gt,
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
+        # for bit, y in enumerate([x[1] for x in xy]):
+        #     self._ax.text(
+        #         xpos + 0.07 - 0.5 * wid,
+        #         y,
+        #         str(bit),
+        #         ha="left",
+        #         va="center",
+        #         fontsize=self._style["fs"],
+        #         color=node_data[node].gt,
+        #         clip_on=True,
+        #         zorder=PORDER_TEXT,
+        #     )
+        # if c_xy:
+        #     # annotate classical inputs
+        #     for bit, y in enumerate([x[1] for x in c_xy]):
+        #         self._ax.text(
+        #             cxpos + 0.07 - 0.5 * wid,
+        #             y,
+        #             str(bit),
+        #             ha="left",
+        #             va="center",
+        #             fontsize=self._style["fs"],
+        #             color=node_data[node].gt,
+        #             clip_on=True,
+        #             zorder=PORDER_TEXT,
+        #         )
         if node_data[node].gate_text:
             gate_ypos = ypos + 0.5 * qubit_span
             if node_data[node].param_text:
                 gate_ypos = ypos + 0.4 * height
-                self._ax.text(
-                    xpos + 0.11,
-                    ypos + 0.2 * height,
-                    node_data[node].param_text,
-                    ha="center",
-                    va="center",
-                    fontsize=self._style["sfs"],
-                    color=node_data[node].sc,
-                    clip_on=True,
-                    zorder=PORDER_TEXT,
-                )
-            self._ax.text(
-                xpos + 0.11,
-                gate_ypos,
-                node_data[node].gate_text,
-                ha="center",
-                va="center",
-                fontsize=self._style["fs"],
-                color=node_data[node].gt,
-                clip_on=True,
-                zorder=PORDER_TEXT,
-            )
+            #     self._ax.text(
+            #         xpos + 0.11,
+            #         ypos + 0.2 * height,
+            #         node_data[node].param_text,
+            #         ha="center",
+            #         va="center",
+            #         fontsize=self._style["sfs"],
+            #         color=node_data[node].sc,
+            #         clip_on=True,
+            #         zorder=PORDER_TEXT,
+            #     )
+            # self._ax.text(
+            #     xpos + 0.11,
+            #     gate_ypos,
+            #     node_data[node].gate_text,
+            #     ha="center",
+            #     va="center",
+            #     fontsize=self._style["fs"],
+            #     color=node_data[node].gt,
+            #     clip_on=True,
+            #     zorder=PORDER_TEXT,
+            # )
 
     def _flow_op_gate(self, node, node_data, glob_data):
         """Draw the box for a flow op circuit"""
@@ -1582,28 +1585,28 @@ class MatplotlibDrawer:
             self._ax.add_patch(box)
 
             # Indicate type of ControlFlowOp and if expression used, print below
-            self._ax.text(
-                xpos - x_shift - op_spacer,
-                ypos_max + 0.2 - y_shift,
-                flow_text,
-                ha="left",
-                va="center",
-                fontsize=self._style["fs"],
-                color=node_data[node].tc,
-                clip_on=True,
-                zorder=PORDER_FLOW,
-            )
-            self._ax.text(
-                xpos - x_shift + expr_spacer,
-                ypos_max + 0.2 - y_shift - 0.4,
-                node_data[node].expr_text,
-                ha="left",
-                va="center",
-                fontsize=self._style["sfs"],
-                color=node_data[node].tc,
-                clip_on=True,
-                zorder=PORDER_FLOW,
-            )
+            # self._ax.text(
+            #     xpos - x_shift - op_spacer,
+            #     ypos_max + 0.2 - y_shift,
+            #     flow_text,
+            #     ha="left",
+            #     va="center",
+            #     fontsize=self._style["fs"],
+            #     color=node_data[node].tc,
+            #     clip_on=True,
+            #     zorder=PORDER_FLOW,
+            # )
+            # self._ax.text(
+            #     xpos - x_shift + expr_spacer,
+            #     ypos_max + 0.2 - y_shift - 0.4,
+            #     node_data[node].expr_text,
+            #     ha="left",
+            #     va="center",
+            #     fontsize=self._style["sfs"],
+            #     color=node_data[node].tc,
+            #     clip_on=True,
+            #     zorder=PORDER_FLOW,
+            # )
             if isinstance(node.op, ForLoopOp):
                 idx_set = str(node_data[node].indexset)
                 # If a range was used display 'range' and grab the range value
@@ -1617,17 +1620,17 @@ class MatplotlibDrawer:
                         idx_set[4] = "..."
                     idx_set = f"{','.join(idx_set)}"
                 y_spacer = 0.2 if len(node.qargs) == 1 else 0.5
-                self._ax.text(
-                    xpos - x_shift - 0.04,
-                    ypos_max - y_spacer - y_shift,
-                    idx_set,
-                    ha="left",
-                    va="center",
-                    fontsize=self._style["sfs"],
-                    color=node_data[node].tc,
-                    clip_on=True,
-                    zorder=PORDER_FLOW,
-                )
+                # self._ax.text(
+                #     xpos - x_shift - 0.04,
+                #     ypos_max - y_spacer - y_shift,
+                #     idx_set,
+                #     ha="left",
+                #     va="center",
+                #     fontsize=self._style["sfs"],
+                #     color=node_data[node].tc,
+                #     clip_on=True,
+                #     zorder=PORDER_FLOW,
+                # )
             # If there's an else or a case draw the vertical line and the name
             else_case_text = "Else" if isinstance(node.op, IfElseOp) else "Case"
             ewidth_incr = if_width
@@ -1641,17 +1644,17 @@ class MatplotlibDrawer:
                         linestyle="solid",
                         zorder=PORDER_FLOW,
                     )
-                    self._ax.text(
-                        xpos + ewidth_incr + 0.4 - x_shift,
-                        ypos_max + 0.2 - y_shift,
-                        else_case_text,
-                        ha="left",
-                        va="center",
-                        fontsize=self._style["fs"],
-                        color=node_data[node].tc,
-                        clip_on=True,
-                        zorder=PORDER_FLOW,
-                    )
+                    # self._ax.text(
+                    #     xpos + ewidth_incr + 0.4 - x_shift,
+                    #     ypos_max + 0.2 - y_shift,
+                    #     else_case_text,
+                    #     ha="left",
+                    #     va="center",
+                    #     fontsize=self._style["fs"],
+                    #     color=node_data[node].tc,
+                    #     clip_on=True,
+                    #     zorder=PORDER_FLOW,
+                    # )
                     if isinstance(node.op, SwitchCaseOp):
                         jump_val = node_data[node].jump_values[circ_num]
                         # If only one value, e.g. (0,)
@@ -1666,17 +1669,17 @@ class MatplotlibDrawer:
                                 jump_text[4] = "..."
                             jump_text = f"{', '.join(jump_text)}"
                         y_spacer = 0.2 if len(node.qargs) == 1 else 0.5
-                        self._ax.text(
-                            xpos + ewidth_incr + 0.4 - x_shift,
-                            ypos_max - y_spacer - y_shift,
-                            jump_text,
-                            ha="left",
-                            va="center",
-                            fontsize=self._style["sfs"],
-                            color=node_data[node].tc,
-                            clip_on=True,
-                            zorder=PORDER_FLOW,
-                        )
+                        # self._ax.text(
+                        #     xpos + ewidth_incr + 0.4 - x_shift,
+                        #     ypos_max - y_spacer - y_shift,
+                        #     jump_text,
+                        #     ha="left",
+                        #     va="center",
+                        #     fontsize=self._style["sfs"],
+                        #     color=node_data[node].tc,
+                        #     clip_on=True,
+                        #     zorder=PORDER_FLOW,
+                        # )
                 ewidth_incr += ewidth + 1
 
             fold_level += 1
@@ -1750,9 +1753,9 @@ class MatplotlibDrawer:
     def _ctrl_qubit(self, xy, glob_data, fc=None, ec=None, tc=None, text="", text_top=None):
         """Draw a control circle and if top or bottom control, draw control label"""
         xpos, ypos = xy
-        box = glob_data["patches_mod"].Circle(
+        box = glob_data["patches_mod"].Circle( # NOTE HERE for ctrl qubit circ
             xy=(xpos, ypos),
-            radius=WID * 0.15,
+            radius=WID * 0.45, # NOTE CHANGED
             fc=fc,
             ec=ec,
             linewidth=self._lwidth15,
@@ -1773,17 +1776,17 @@ class MatplotlibDrawer:
 
         # display the control label at the top or bottom if there is one
         ctrl_ypos = ypos + label_padding * HIG if text_top else ypos - 0.3 * HIG
-        self._ax.text(
-            xpos,
-            ctrl_ypos,
-            text,
-            ha="center",
-            va="top",
-            fontsize=self._style["sfs"],
-            color=tc,
-            clip_on=True,
-            zorder=PORDER_TEXT,
-        )
+        # self._ax.text(
+        #     xpos,
+        #     ctrl_ypos,
+        #     text,
+        #     ha="center",
+        #     va="top",
+        #     fontsize=self._style["sfs"],
+        #     color=tc,
+        #     clip_on=True,
+        #     zorder=PORDER_TEXT,
+        # )
 
     def _x_tgt_qubit(self, xy, glob_data, ec=None, ac=None):
         """Draw the cnot target symbol"""
@@ -1860,17 +1863,17 @@ class MatplotlibDrawer:
         gate_text = node_data[node].gate_text.split("\n")[-1]
         if node_data[node].raw_gate_text in self._calibrations:
             xpos, ypos = xy[0]
-            self._ax.text(
-                xpos,
-                ypos + 0.7 * HIG,
-                gate_text,
-                ha="center",
-                va="top",
-                fontsize=self._style["sfs"],
-                color=self._style["tc"],
-                clip_on=True,
-                zorder=PORDER_TEXT,
-            )
+            # self._ax.text(
+            #     xpos,
+            #     ypos + 0.7 * HIG,
+            #     gate_text,
+            #     ha="center",
+            #     va="top",
+            #     fontsize=self._style["sfs"],
+            #     color=self._style["tc"],
+            #     clip_on=True,
+            #     zorder=PORDER_TEXT,
+            # )
 
     def _swap_cross(self, xy, color=None):
         """Draw the Swap cross symbol"""
@@ -1897,17 +1900,17 @@ class MatplotlibDrawer:
 
         # 0.11 = the initial gap, add 1/2 text width to place on the right
         xp = xpos + 0.11 + node_data[node].width / 2
-        self._ax.text(
-            xp,
-            ypos + HIG,
-            text,
-            ha="center",
-            va="top",
-            fontsize=self._style["sfs"],
-            color=tc,
-            clip_on=True,
-            zorder=PORDER_TEXT,
-        )
+        # self._ax.text(
+        #     xp,
+        #     ypos + HIG,
+        #     text,
+        #     ha="center",
+        #     va="top",
+        #     fontsize=self._style["sfs"],
+        #     color=tc,
+        #     clip_on=True,
+        #     zorder=PORDER_TEXT,
+        # )
 
     def _line(self, xy0, xy1, lc=None, ls=None, zorder=PORDER_LINE):
         """Draw a line from xy0 to xy1"""
